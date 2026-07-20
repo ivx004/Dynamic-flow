@@ -1,16 +1,43 @@
-# React + Vite
+# API — Clases del centro de yoga / pilates
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Alumno:** Ivan David Valdebenito Uribe  ·  **Sección:** C1
+**Tema:** Tema 22: Centro de yoga / pilates
 
-Currently, two official plugins are available:
+API asignada por el docente para la **Evaluación 3 (UA3)**. Tu frontend en React debe
+**consumir** esta API con `fetch` o `axios`, mostrando los estados de ⏳ carga, ✅ datos y ❌ error.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Endpoint
 
-## React Compiler
+- `GET /api/clases` → lista todos los registros (`{ total, clases: [...] }`)
+- `GET /api/clases/{id}` → un registro por id
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Cómo la usarás en el frontend
 
-## Expanding the ESLint configuration
+GET /api/clases muestra las clases; el CRUD (LocalStorage) reserva cupos eligiendo una clase.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+> Tu **CRUD con Local Storage** (Reservas de clase) es lo que tú administras (crear/editar/eliminar).
+> La **API** entrega datos de referencia que muestras y usas para llenar los selectores del formulario.
+
+## Cómo correr la API
+
+```bash
+pip install -r requirements.txt
+uvicorn main:app --host 0.0.0.0 --port 8000
+```
+
+Prueba: <http://127.0.0.1:8000/api/clases>  ·  Docs: <http://127.0.0.1:8000/docs>
+
+## Cómo consumirla desde React (ejemplo)
+
+```javascript
+useEffect(() => {
+  fetch("http://127.0.0.1:8000/api/clases")
+    .then((res) => {
+      if (!res.ok) throw new Error("Error " + res.status)
+      return res.json()
+    })
+    .then((data) => setDatos(data.clases))   // ✅ datos
+    .catch((err) => setError(err.message))        // ❌ error
+    .finally(() => setCargando(false))            // fin de ⏳ carga
+}, [])
+```
